@@ -5,7 +5,7 @@ describe('Updating records', () => {
   let joe;
 
   beforeEach((done) =>{
-    joe = new User({name: 'Joe'});
+    joe = new User({ name: 'Joe', postCount: 1 });
     joe.save()
     .then(() => done());
   });
@@ -26,8 +26,9 @@ describe('Updating records', () => {
   });
 
   it('model instance can update', (done) => {
-    assertName(joe.update({ name: 'Joey' }), done);
+    assertName(joe.update({ name: 'Joey'}), done);
   });
+
   it('A model class can update', (done) => {
     //Select all items with the given value and replace with second param
     assertName(User.update({ name: 'Joe' }, { name: 'Joey' }), done);
@@ -39,5 +40,14 @@ describe('Updating records', () => {
 
   it('A model class can find an item by ID and update', (done) => {
     assertName(User.findByIdAndUpdate(joe._id, { name: 'Joey' }), done);
+  });
+
+  it('A user can have the Post Count incremented by 1', (done) => {
+    User.update({ name: 'Joe' }, { $inc: { postCount: 4 }})
+       .then(() => User.findOne({ name: 'Joe' }))
+       .then((user) => {
+          assert(user.postCount === 5);
+          done();
+       });
   });
 });
