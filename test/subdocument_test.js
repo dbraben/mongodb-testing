@@ -44,7 +44,8 @@ describe('User posts', () => {
        .then(() => User.findOne({ name: 'Joe' }))
        .then((User) => {
          assert(User.posts[0].title === 'HelloWorld!');
-         User.posts.pop({ title: 'HelloWorld!'});
+         const post = User.posts[0];
+         post.remove();
          return User.save();
        })
        .then(() => User.findOne({ name: 'Joe' }))
