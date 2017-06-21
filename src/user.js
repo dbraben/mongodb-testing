@@ -12,7 +12,11 @@ const UserSchema = new Schema({
     required: [true, 'Name is required']
   },
   posts: [PostSchema],
-  likes: Number
+  likes: Number,
+  blogPosts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'blogPost'
+  }]
 });
 //Important to use function to keep the context
 // rather than a arrow function
