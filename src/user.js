@@ -18,11 +18,24 @@ const UserSchema = new Schema({
     ref: 'blogPost'
   }]
 });
-//Important to use function to keep the context
+
+// ==== Virtual example ====
+// Important to use function to keep the context
 // rather than a arrow function
+// model instance is equal to this. hence function over fat-arrow
 UserSchema.virtual('postCount').get(function(user){
   return this.posts.length;
-})
+});
+
+// ==== Middleware example ====
+// model instance is equal to 'this.' hence function over fat-arrow
+// Query Operator (IN Modifier): Look in BlogPost list for IDs
+// and if _id is in this.blogPosts list remove it
+UserSchema.pre('remove', function(next){
+  const BlogPost = mongoose.model('blogPost');
+  BlogPost.remove({ _id: { $in: this.blogPosts } })
+    .then(() => next());
+});
 
 const User = mongoose.model('user', UserSchema);
 
